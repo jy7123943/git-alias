@@ -22,3 +22,7 @@ git a
 git ci "initial commit"
 git p
 ```
+
+## Reference
+
+- [편리한 git alias 설정하기, 기계인간 John Grib](https://johngrib.github.io/wiki/git-alias/)
