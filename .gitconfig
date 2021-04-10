@@ -7,6 +7,13 @@
     | column -t -s'=' \
     | sed 's/!#* *//; s/;$//' \
     | cut -c1-85"
+	aliases = !git config --list | grep ^alias\\. | cut -c 7- | grep -Ei --color \"$1\" "#"
+	alias-select = "!#Select alias;\n \
+		f() { \
+			git aliases | fzf --reverse | awk -F= '{print $1}'; \
+		}; f"
+	exe = "!#Execute git command with fzf;\n \
+		git $(git alias-select)"
 	diff-select = "!#Select diff info;\n \
 		f() { \
 			_height=$(stty size | awk '{print $1}');\
