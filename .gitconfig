@@ -1,0 +1,191 @@
+[alias]
+	alias = "!# Prints all aliases;\n\
+    git config --list \
+    | egrep '^alias.+' \
+    | sed -e 's/^alias\\.//' \
+    | sed -e 's/^[^=]*=/\\'$'\\033[31m&\\033[(B\\033[m/' \
+    | column -t -s'=' \
+    | sed 's/!#* *//; s/;$//' \
+    | cut -c1-85"
+	diff-select = "!#Select diff info;\n \
+		f() { \
+			_height=$(stty size | awk '{print $1}');\
+			git ss | fzf -m --preview \"git diff {2} | head -n $_height | pygmentize\" --color 'preview-bg:#334455' | awk '{print $2}'; \
+		}; f"
+	branch-select = "! # Select branch with preview; \n\
+		f() { \
+			_height=$(stty size | awk '{print $1}');\
+			git branch | egrep -v '^\\*' | fzf --preview \"git l {1} | head -n $_height\"; \
+		}; f"
+	branch-select-all = "! # Select branch with preview; \n\
+		f() { \
+			_height=$(stty size | awk '{print $1}');\
+			git branch -a | egrep -v '^\\*' | fzf --preview \"git l {1} | head -n $_height\"; \
+		}; f"
+	unmerged-branch-select = "! # Show unmerged branch with preview; \n\
+		f() { \
+			MASTER_HASH=`git rev-parse --short --verify origin/master`;\
+			_height=$(stty size | awk '{print $1}');\
+			git branch --no-contains $MASTER_HASH --no-merged $MASTER_HASH | grep -v '^\\*\\|\\<master$' | egrep -v '^\\*' | fzf --preview \"git l {1} | head -n $_height\"; \
+		}; f"
+	stash-select = "!# Select stash item(s);\n\
+		f() { \
+			git stash-list \
+			| fzf --ansi --layout=reverse $1 --preview \"git stash show -p {1} --color=always\" \
+			| cut -d' ' -f1; \
+		}; f"
+	reflog-select = "!# Select reflog;\n\
+		git reflog \
+		| fzf -m --ansi --layout=reverse --preview=\"echo {} | sed 's/^[*| ]*//g' | cut -d' ' -f1 | xargs git show --color=always \" \
+		| sed 's/^[*| ]*//g' | cut -d' ' -f1"
+	commit-select = "!# Select a commit hash from log graph;\n\
+		git l \
+		| fzf -m --ansi --layout=reverse --preview=\"echo {} | sed 's/^[*| ]*//g' | cut -d' ' -f1 | xargs git show --color=always \" \
+		| sed 's/^[*| ]*//g' | cut -d' ' -f1"
+	commit-select-m = "!# Select a commit hash from log graph;\n\
+		git l \
+		| fzf -m --ansi --layout=reverse --preview=\"echo {} | sed 's/^[*| ]*//g' | cut -d' ' -f1 | xargs git show --color=always \" \
+		| sed 's/^[*| ]*//g' | cut -d' ' -f1"
+	c-s = "!git commit-select"
+	a = "!# Add specific files with fzf preview diffs; \n\
+		git add $(git diff-select)"
+	aa = "!# Add all;\n\
+		git add ."
+	aa-c = "!# Add all and commit;\n\
+		git aa; git ci"
+	ci = "!# Commit with message;\n \
+		git commit -m"
+	ci-amend = "!# Change previous commit message;\n \
+		git commit --amend -m"
+	ci-a = "!git ci-amend"
+	ci-no-edit = "!# Change committed files;\n \
+		git commit --amend --no-edit"
+	ci-ne = "!git ci-no-edit"
+	unstage = "!# Unstage specific files;\n\
+		git reset HEAD $(git status -s | fzf -m | awk '{print $2}')"
+	uns = "!git unstage"
+	unstage-a = "!# Unstage all files;\n \
+		git reset HEAD ."
+	uns-a = "!git unstage-a"
+	d-aa = "!# Discard all changes;\n \
+		git checkout -- ."
+	d-a = "!# Discard specific change;\n \
+		git checkout -- $(git status -s | fzf -m | awk '{print $2}')"
+	s = status
+	ss = status -s
+	co = checkout
+	ch = "!# Checkout to exist branch with fzf;\n \
+		git checkout $(git branch-select)"
+	ch-m = "!# Checkout to master or main;\n \
+		if `git show-ref --quiet refs/heads/master`; \
+		then git checkout master; else git checkout main;\
+		fi"
+	ch-n = "!# Create branch and checkout to it;\n \
+			git checkout -b"
+	ch-nc = "!# Create branch from specific commit and checkout to it;\n \
+		read -p \"branch name: \" BRANCHNAME;\
+		git branch \"$BRANCHNAME\" $(git commit-select);\
+		git checkout \"$BRANCHNAME\""
+	track-all-remote-branch = "!# Track all remote branches;\n \
+		for i in `git branch -a | grep remote | grep -v HEAD | grep -v master`; do git branch --track ${i#remotes/origin/} $i; done;"
+	t-a = "!git track-all-remote-branch"
+	br = branch
+	l = log --all --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
+  b0 = "!# Print current branch;\n \
+		git symbolic-ref --short HEAD"
+	back = "!# Create backup branch;\n \
+		git branch backup-`git b0`;"
+	ch-back = "!# Create backup branch and checkout to that branch;\n \
+		git checkout -b backup-`git b0`;"
+	d-b = "!# Delete branch with fzf;\n \
+		git branch -D $(git branch-select)"
+	d-bt = "!# Delete branch by typing;\n \
+		git branch -D"
+	d-b0 = "!# Delete current branch; \n \
+		CURRENT_BRANCH=`git b0`; git ch-m; git d-bt $CURRENT_BRANCH;"
+	remote-branch = "!# Show current remote branch;\n \
+		git remote show"
+	p = "!# Push to current branch;\n \
+		git push `git remote-branch` `git b0`"
+	p-f = "!# Force push;\n \
+		git push `git remote-branch` `git b0` --force-with-lease"
+	pl = "!# Pull from current branch;\n \
+		git pull `git remote-branch` `git b0`"
+	pp = "!# Pull first and then push;\n \
+		git pl; git p;"
+	clean-branch = "!# Cleanup all merged branches;\n \
+		git branch -d $(git branch --merged | grep -v '^\\*\\|\\<master$')"
+	c-b = "!git clean-branch"
+	clean-unmerged = "!# Cleanup all unmerged branches except working branch;\n \
+		git fetch;\
+		MASTER_HASH=`git rev-parse --short --verify master`;\
+		git ch-m;\
+		$(git unmerged-branch-select);\
+		git branch -D $(git branch --no-contains $MASTER_HASH --no-merged $MASTER_HASH | grep -v '^\\*\\|\\<master$')"
+	c-ub = "!git clean-unmerged"
+	branch-list = "!# List the branches;\n\
+		git for-each-ref --sort=-committerdate refs/heads --format='%(HEAD) %(refname:strip=2) | %(committerdate:relative) | %(authorname)' \
+		| column -ts'|' \
+		| sed 's/^ /./'"
+	b-l = "!git branch-list"
+	s-p = "!git stash pop"
+	stash-save = "!# Save changes into the stash stack;\n \
+		git stash save"
+	s-s = "!git stash-save"
+	stash-list = "!# List stash items;\n\
+		git stash list --pretty=format:\"%C(red)%gd%C(reset) %C(green)(%cr) %C(reset)%s\""
+	s-l = "!git stash-list"
+	stash-op = "!#A private stash tool;\nf() { git stash-select | xargs git stash $1; }; f"
+	stash-apply = "!# Select a stash item and Apply it;\n\
+		git stash-op apply"
+	s-a = "!git stash-apply"
+	stash-drop = "!# Select a stash item and Drop it;\n\
+		git stash-op drop"
+	s-d = "!git stash-drop"
+	stash-clear = "!# Clear all stashes;\n\
+		git stash clear"
+	s-c = "!git stash-clear"
+	rebase-master = "!# Rebase current branch to master;\n\
+		BRANCH=`git symbolic-ref --short HEAD`; git ch-m; git pl; git co $BRANCH; git rebase master;"
+	rb-m = "!git rebase-master"
+	rebase-branch = "!# Rebase current branch to specific branch;\n\
+		BRANCH=`git symbolic-ref --short HEAD`; read -p \"branch name: \" BRANCHNAME; git checkout \"$BRANCHNAME\"; git pl; git co $BRANCH; git rebase \"$BRANCHNAME\""
+	rb-b = "!git rebase-branch"
+	rebase-continue = "!# Rebase continue;\n\
+		git rebase --continue;"
+	rb-c = "!git rebase-continue"
+	rebase-skip = "!# Rebase skip;\n\
+		git rebase --skip;"
+	rb-s = "!git rebase-skip"
+	rebase-abort = "!# Rebase abort;\n\
+		git rebase --abort;"
+	rb-a = "!git rebase-abort"
+	reflog-date = "!# Reflog with relative date information;\n\
+		git reflog --relative-date"
+	rf-d = "!git reflog-date"
+	reset-reflog = "!# Resets the index and working tree with reflog;\n \
+		git reset --hard $(git reflog-select)"
+	rs-r = "!git reset-reflog"
+	reset-hard = "!# Resets the index and working tree with hard options;\n \
+		git reset --hard $(git commit-select-m)"
+	rs-h = "!git reset-hard"
+	reset-soft = "!# Resets the index and working tree with soft options;\n \
+		git reset --soft $(git commit-select-m)"
+	rs-s = "!git reset-soft"
+	reset-mixed = "!# Resets the index and working tree with mixed options;\n \
+		git reset --mixed $(git commit-select-m)"
+	rs = "!git reset-mixed"
+	cherrypick-m = "!# Cherry pick; \n \
+		git cherry-pick $(git commit-select)^..$(git commit-select)"
+	cp-m = "!git cherrypick-m"
+	cherrypick = "!# Cherry pick; \n \
+		git cherry-pick $(git commit-select)"
+	cp = "!git cherrypick"
+	cp-b = "!# Cherry pick to new branch; \n \
+		git ch-nc; git cp-m;"
+	f = "!# Fetch; \n \
+		git fetch;"
+	f-p = "!# Fetch and prune branches; \n \
+		git fetch --prune;"
+	o = "!# Open github page; \n \
+		git open;"
