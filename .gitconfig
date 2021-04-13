@@ -161,7 +161,10 @@
 		BRANCH=`git symbolic-ref --short HEAD`; git ch-m; git pl; git co $BRANCH; git rebase master;"
 	rb-m = "!git rebase-master"
 	rebase-branch = "!# Rebase current branch to specific branch;\n\
-		BRANCH=`git symbolic-ref --short HEAD`; read -p \"branch name: \" BRANCHNAME; git checkout \"$BRANCHNAME\"; git pl; git co $BRANCH; git rebase \"$BRANCHNAME\""
+		BRANCH=`git symbolic-ref --short HEAD`;\
+		REBASEBRANCH=$(git branch-select);\
+		git co $REBASEBRANCH;\
+		git pl; git co $BRANCH; git rebase $REBASEBRANCH"
 	rb-b = "!git rebase-branch"
 	rebase-continue = "!# Rebase continue;\n\
 		git rebase --continue;"
