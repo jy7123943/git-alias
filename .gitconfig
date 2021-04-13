@@ -142,7 +142,7 @@
 	b-l = "!git branch-list"
 	s-p = "!git stash pop"
 	stash-save = "!# Save changes into the stash stack;\n \
-		git stash save"
+		git aa;	git stash save"
 	s-s = "!git stash-save"
 	stash-list = "!# List stash items;\n\
 		git stash list --pretty=format:\"%C(red)%gd%C(reset) %C(green)(%cr) %C(reset)%s\""
