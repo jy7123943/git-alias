@@ -181,6 +181,12 @@
 	reset-reflog = "!# Resets the index and working tree with reflog;\n \
 		git reset --hard $(git reflog-select)"
 	rs-r = "!git reset-reflog"
+	revert = "!# Revert a specific commit;\n \
+		git revert $(git commit-select)"
+	rv = "!git revert"
+	drop = "!# Drop a specific commit;\n \
+		git rebase -i $(git commit-select)^"
+	d = "!git drop"
 	reset-hard = "!# Resets the index and working tree with hard options;\n \
 		git reset --hard $(git commit-select-m)"
 	rs-h = "!git reset-hard"
