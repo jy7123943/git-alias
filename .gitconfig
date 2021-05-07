@@ -92,7 +92,7 @@
 	co = checkout
 	ch = "!# Checkout to exist branch with fzf;\n \
 		git checkout $(git branch-select)"
-	ch-m = "!# Checkout to master or main;\n \
+	ch-m = "!# Checkout to main or master;\n \
 		git checkout $(git main-or-master)"
 	ch-n = "!# Create branch and checkout to it;\n \
 			git checkout -b"
@@ -159,7 +159,7 @@
 	stash-clear = "!# Clear all stashes;\n\
 		git stash clear"
 	s-c = "!git stash-clear"
-	rebase-master = "!# Rebase current branch to master;\n\
+	rebase-master = "!# Rebase current branch to main or master;\n\
 		BRANCH=`git symbolic-ref --short HEAD`; git ch-m; git pl; git co $BRANCH; git rebase $(git main-or-master);"
 	rb-m = "!git rebase-master"
 	rebase-branch = "!# Rebase current branch to specific branch;\n\
