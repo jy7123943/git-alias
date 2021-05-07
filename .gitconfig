@@ -125,6 +125,8 @@
 		git push `git remote-branch` `git b0` --force-with-lease"
 	pl = "!# Pull from current branch;\n \
 		git pull `git remote-branch` `git b0`"
+	pl-m = "!# Checkout to master and pull;\n \
+		git ch-m; git pl;"
 	pp = "!# Pull first and then push;\n \
 		git pl; git p;"
 	clean-branch = "!# Cleanup all merged branches;\n \
