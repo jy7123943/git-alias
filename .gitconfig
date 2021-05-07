@@ -31,9 +31,9 @@
 		}; f"
 	unmerged-branch-select = "! # Show unmerged branch with preview; \n\
 		f() { \
-			MASTER_HASH=`git rev-parse --short --verify origin/master`;\
+			MASTER_HASH=`git rev-parse --short --verify origin/$(git main-or-master)`;\
 			_height=$(stty size | awk '{print $1}');\
-			git branch --no-contains $MASTER_HASH --no-merged $MASTER_HASH | grep -v '^\\*\\|\\<master$' | egrep -v '^\\*' | fzf --preview \"git l {1} | head -n $_height\"; \
+			git branch --no-contains $MASTER_HASH --no-merged $MASTER_HASH | grep -v '^\\*\\|\\<$(git main-or-master)$' | egrep -v '^\\*' | fzf --preview \"git l {1} | head -n $_height\"; \
 		}; f"
 	stash-select = "!# Select stash item(s);\n\
 		f() { \
@@ -93,9 +93,7 @@
 	ch = "!# Checkout to exist branch with fzf;\n \
 		git checkout $(git branch-select)"
 	ch-m = "!# Checkout to master or main;\n \
-		if `git show-ref --quiet refs/heads/master`; \
-		then git checkout master; else git checkout main;\
-		fi"
+		git checkout $(git main-or-master)"
 	ch-n = "!# Create branch and checkout to it;\n \
 			git checkout -b"
 	ch-nc = "!# Create branch from specific commit and checkout to it;\n \
@@ -103,7 +101,7 @@
 		git branch \"$BRANCHNAME\" $(git commit-select);\
 		git checkout \"$BRANCHNAME\""
 	track-all-remote-branch = "!# Track all remote branches;\n \
-		for i in `git branch -a | grep remote | grep -v HEAD | grep -v master`; do git branch --track ${i#remotes/origin/} $i; done;"
+		for i in `git branch -a | grep remote | grep -v HEAD | grep -v $(git main-or-master)`; do git branch --track ${i#remotes/origin/} $i; done;"
 	t-a = "!git track-all-remote-branch"
 	br = branch
 	l = log --all --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
@@ -130,14 +128,14 @@
 	pp = "!# Pull first and then push;\n \
 		git pl; git p;"
 	clean-branch = "!# Cleanup all merged branches;\n \
-		git branch -d $(git branch --merged | grep -v '^\\*\\|\\<master$')"
+		git branch -d $(git branch --merged | grep -v '^\\*\\|\\<$(git main-or-master)$')"
 	c-b = "!git clean-branch"
 	clean-unmerged = "!# Cleanup all unmerged branches except working branch;\n \
 		git fetch;\
-		MASTER_HASH=`git rev-parse --short --verify master`;\
+		MASTER_HASH=`git rev-parse --short --verify $(git main-or-master)`;\
 		git ch-m;\
 		$(git unmerged-branch-select);\
-		git branch -D $(git branch --no-contains $MASTER_HASH --no-merged $MASTER_HASH | grep -v '^\\*\\|\\<master$')"
+		git branch -D $(git branch --no-contains $MASTER_HASH --no-merged $MASTER_HASH | grep -v '^\\*\\|\\<$(git main-or-master)$')"
 	c-ub = "!git clean-unmerged"
 	branch-list = "!# List the branches;\n\
 		git for-each-ref --sort=-committerdate refs/heads --format='%(HEAD) %(refname:strip=2) | %(committerdate:relative) | %(authorname)' \
@@ -162,7 +160,7 @@
 		git stash clear"
 	s-c = "!git stash-clear"
 	rebase-master = "!# Rebase current branch to master;\n\
-		BRANCH=`git symbolic-ref --short HEAD`; git ch-m; git pl; git co $BRANCH; git rebase master;"
+		BRANCH=`git symbolic-ref --short HEAD`; git ch-m; git pl; git co $BRANCH; git rebase $(git main-or-master);"
 	rb-m = "!git rebase-master"
 	rebase-branch = "!# Rebase current branch to specific branch;\n\
 		BRANCH=`git symbolic-ref --short HEAD`;\
