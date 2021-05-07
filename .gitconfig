@@ -53,6 +53,10 @@
 		git l \
 		| fzf -m --ansi --layout=reverse --preview=\"echo {} | sed 's/^[*| ]*//g' | cut -d' ' -f1 | xargs git show --color=always \" \
 		| sed 's/^[*| ]*//g' | cut -d' ' -f1"
+	main-or-master="!# Echo master or main;\n \
+		if `git show-ref --quiet refs/heads/master`; \
+		then echo master; else echo main;\
+		fi"
 	c-s = "!git commit-select"
 	a = "!# Add specific files with fzf preview diffs; \n\
 		git add $(git diff-select)"
