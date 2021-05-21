@@ -117,6 +117,9 @@
 		git branch -D"
 	d-b0 = "!# Delete current branch; \n \
 		CURRENT_BRANCH=`git b0`; git ch-m; git d-bt $CURRENT_BRANCH;"
+	rename-branch = "!# Rename current branch; \n \
+		git branch -m $(git b0)"
+	rename="!git rename-branch"
 	remote-branch = "!# Show current remote branch;\n \
 		git remote show"
 	p = "!# Push to current branch;\n \
