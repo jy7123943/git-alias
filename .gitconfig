@@ -217,3 +217,9 @@
 		git fetch --prune;"
 	o = "!# Open github page; \n \
 		git open;"
+	repo = "!# Print repository name; \n \
+		echo $(basename $(git rev-parse --show-toplevel))"
+	dp = "!# Copy staging deploy message from current branch's latest commit; \n \
+		echo  @deploybot deploy $(git repo) staging $(git rev-parse --short HEAD) | pbcopy && echo Copied : `pbpaste`;"
+	dp-p = "!# Copy production deploy message from current branch's latest commit; \n \
+		echo  @deploybot deploy $(git repo) production $(git rev-parse --short HEAD) | pbcopy && echo Copied : `pbpaste`;"
