@@ -164,6 +164,9 @@
 	stash-clear = "!# Clear all stashes;\n\
 		git stash clear"
 	s-c = "!git stash-clear"
+	rebase-from = "!# Rebase from specific commit to main or master;\n\
+		BRANCH=`git symbolic-ref --short HEAD`; git ch-m; git pl; git co $BRANCH; git rebase --onto $(git main-or-master) $(git commit-select)^"
+	rb-f = "!git rebase-from"
 	rebase-master = "!# Rebase current branch to main or master;\n\
 		BRANCH=`git symbolic-ref --short HEAD`; git ch-m; git pl; git co $BRANCH; git rebase $(git main-or-master);"
 	rb-m = "!git rebase-master"
