@@ -103,6 +103,8 @@
 	track-all-remote-branch = "!# Track all remote branches;\n \
 		for i in `git branch -a | grep remote | grep -v HEAD | grep -v $(git main-or-master)`; do git branch --track ${i#remotes/origin/} $i; done;"
 	t-a = "!git track-all-remote-branch"
+	u-b = "!# Update all branches including remote branches;\n \
+		git ch-m; git pl; git f; git t-a;"
 	br = branch
 	l = log --all --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
   b0 = "!# Print current branch;\n \
