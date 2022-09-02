@@ -64,6 +64,10 @@
 		git add ."
 	aa-c = "!# Add all and commit;\n\
 		git aa; git ci"
+	a-c = "!# Add specific files and commit; \n\
+		git add $(git diff-select);\
+		read -p \"commit message: \" COMMIT_MESSAGE;\
+		git ci \"$COMMIT_MESSAGE\";"
 	aa-cp = "!# Add all, commit and push;\n \
 		git aa;\
 		read -p \"commit message: \" COMMIT_MESSAGE;\
